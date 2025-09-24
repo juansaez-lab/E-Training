@@ -1,0 +1,41 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: etime-database-build
+labels:
+  app.kubernetes.io/name: etime-database-build
+  app.kubernetes.io/instance: etime-database-build-main
+  app.kubernetes.io/component: database-build
+  app.kubernetes.io/part-of: etime
+
+objects:
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      name: etime-database-build-config
+    spec:
+      ports:
+        - name: etime-database-port
+          port: 3306
+          targetPort: 3306
+      output:
+        pushSecret:
+          name: artifactory
+        to:
+          kind: DockerImage
+          name: prj-elca-timecontrol-docker.artifactory.svc.elca.ch/database:${IMAGE_TAG}
+      source:
+        type: Binary
+      strategy:
+        dockerStrategy:
+          pullSecret:
+            name: artifactory
+        type: Docker
+
+      completionDeadlineSeconds: 600
+      successfulBuildsHistoryLimit: 3
+      failedBuildsHistoryLimit: 3
+
+parameters:
+  - description: Docker image tag to build
+    name: IMAGE_TAG

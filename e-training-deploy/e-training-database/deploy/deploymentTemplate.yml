@@ -1,0 +1,93 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: etime-${ENVIRONMENT}-${LOCATION}-database-template-deployment
+labels:
+  app.kubernetes.io/name: etime-${ENVIRONMENT}-${LOCATION}-database
+  app.kubernetes.io/instance: etime-${ENVIRONMENT}-${LOCATION}-database-main
+  app.kubernetes.io/component: ${ENVIRONMENT}-${LOCATION}-database
+  app.kubernetes.io/part-of: etime-${ENVIRONMENT}-${LOCATION}
+
+objects:
+  - apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      name: etime-${ENVIRONMENT}-${LOCATION}-database-deployment
+      labels:
+        app.openshift.io/runtime: mysql-database
+    spec:
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            name: etime-${ENVIRONMENT}-${LOCATION}-database-pod
+        spec:
+          serviceAccountName: runas-anyuid
+          securityContext:
+            runAsUser: 0
+          volumes:
+            - name: etime-${ENVIRONMENT}${LOCATION}-database-persistent-volume
+              persistentVolumeClaim:
+                claimName: etime-${ENVIRONMENT}${LOCATION}-database-persistent-volume-claim
+          containers:
+            - name: etime-${ENVIRONMENT}-${LOCATION}-database-container
+              image: prj-elca-timecontrol-docker.artifactory.svc.elca.ch/database:${IMAGE_TAG}
+              env:
+                - name: ENVIRONMENT
+                  value: ${ENVIRONMENT}
+                - name: LOCATION
+                  value: ${LOCATION}
+                - name: IMAGE_TAG
+                  value: ${IMAGE_TAG}
+              resources:
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+                requests:
+                  cpu: ${CPU_REQUESTS}
+                  memory: ${MEMORY_REQUESTS}
+              volumeMounts:
+                - mountPath: "/var/lib/mysql"
+                  name: etime-${ENVIRONMENT}${LOCATION}-database-persistent-volume
+  
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: etime-${ENVIRONMENT}-${LOCATION}-database-service
+    spec:
+      ports:
+        - name: etime-${ENVIRONMENT}-${LOCATION}-database-port
+          port: 3306
+      selector:
+        name: etime-${ENVIRONMENT}-${LOCATION}-database-pod
+  
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: etime-${ENVIRONMENT}-${LOCATION}-database-route
+      annotations:
+        haproxy.router.openshift.io/timeout: 1h
+    spec:
+      host: etime-${ENVIRONMENT}-${LOCATION}-database-prj-elca-timecontrol.apps.okd.svc.elca.ch
+      port:
+        targetPort: etime-${ENVIRONMENT}-${LOCATION}-database-port
+      to:
+        kind: Service
+        name: etime-${ENVIRONMENT}-${LOCATION}-database-service
+        weight: 100
+
+parameters:
+  - description: Environment to build
+    name: ENVIRONMENT
+  - description: Deployment location
+    name: LOCATION
+  - description: Docker image tag to build
+    name: IMAGE_TAG
+  - description: CPU usage limit
+    name: CPU_LIMIT
+  - description: Memory usage limit
+    name: MEMORY_LIMIT
+  - description: Minimum CPU usage
+    name: CPU_REQUESTS
+  - description: Minimum memory usage
+    name: MEMORY_REQUESTS

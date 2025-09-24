@@ -1,0 +1,3 @@
+elcaJenkinsConfigurationBuildPipeline(
+    pom: 'pom.xml',
+)

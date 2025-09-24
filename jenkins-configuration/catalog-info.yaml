@@ -1,0 +1,26 @@
+---
+# Managed by OpenRewrite. Do not edit manually.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: jenkins
+  namespace: prj-elca-timecontrol
+  title: Jenkins instance prj-elca-timecontrol
+  description: ELCA Jenkins instance on prj-elca-timecontrol
+  annotations:
+    backstage.io/kubernetes-label-selector: 'app.kubernetes.io/name=jenkins,app.kubernetes.io/component=jenkins-controller'
+    backstage.io/kubernetes-namespace: prj-elca-timecontrol
+    backstage.io/techdocs-ref: dir:.
+  links:
+    - url: https://jenkins-prj-elca-timecontrol.apps.okd.svc.elca.ch
+      title: production
+  tags:
+    - jenkins
+    - instance
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/prj_elca-timecontrol
+  system: default/elca-jenkins
+  dependsOn:
+    - component:default/jenkins-configuration-parent-pom

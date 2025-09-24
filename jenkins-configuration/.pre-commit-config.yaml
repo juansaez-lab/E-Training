@@ -1,0 +1,47 @@
+# keep in sync with sso-common repo.
+# See https://bitbucket.svc.elca.ch/projects/ELCA-SSO/repos/sso-common/browse/README.md
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-yaml
+        args:
+          - --allow-multiple-documents
+      - id: debug-statements
+      - id: destroyed-symlinks
+      - id: detect-private-key
+        exclude: certs/dev/ca-key.pem
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        args:
+          - --ignore-words-list=
+        exclude: (cert.pem|.pem.text|.svg|.excalidraw)
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args:
+          - "-fparsable"
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.31.1
+    hooks:
+      - id: check-jsonschema
+        name: Check renovate schema
+        args:
+          [
+            '--verbose',
+            '--schemafile',
+            'https://docs.renovatebot.com/renovate-schema.json',
+          ]
+        files: ^renovate.json$

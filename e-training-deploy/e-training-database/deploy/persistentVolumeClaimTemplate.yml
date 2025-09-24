@@ -1,0 +1,29 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: etime-${ENVIRONMENT}-${LOCATION}-database-persistent-volume-claim
+labels:
+  app.kubernetes.io/name: etime-${ENVIRONMENT}-${LOCATION}-database-persistent-volume-claim
+  app.kubernetes.io/instance: etime-${ENVIRONMENT}-${LOCATION}-database-persistent-volume-claim-main
+  app.kubernetes.io/component: ${ENVIRONMENT}-${LOCATION}-database-persistent-volume-claim
+  app.kubernetes.io/part-of: etime-${ENVIRONMENT}-${LOCATION}
+
+objects:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: etime-${ENVIRONMENT}-${LOCATION}-database-persistent-volume-claim
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: ${STORAGE_SIZE}
+
+parameters:
+  - description: Environment to build
+    name: ENVIRONMENT
+  - description: Deployment location
+    name: LOCATION
+  - description: Disk size
+    name: STORAGE_SIZE

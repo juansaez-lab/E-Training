@@ -1,0 +1,36 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: etime-backend-build-config
+labels:
+  app.kubernetes.io/name: etime-backend-build
+  app.kubernetes.io/instance: etime-backend-build-main
+  app.kubernetes.io/component: backend-build
+  app.kubernetes.io/part-of: etime
+
+objects:
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      name: etime-backend-build-config
+    spec:
+      output:
+        pushSecret:
+          name: artifactory
+        to:
+          kind: DockerImage
+          name: prj-elca-timecontrol-docker.artifactory.svc.elca.ch/backend:${IMAGE_TAG}
+      source:
+        type: Binary
+      strategy:
+        dockerStrategy:
+          pullSecret:
+            name: artifactory
+        type: Docker
+      completionDeadlineSeconds: 600
+      successfulBuildsHistoryLimit: 3
+      failedBuildsHistoryLimit: 3
+
+parameters:
+  - description: Docker image tag to build
+    name: IMAGE_TAG

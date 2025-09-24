@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>ch.elca</groupId>
+    <artifactId>jenkins-configuration</artifactId>
+    <version>11.47.0</version>
+    <name>Jenkins configuration</name>
+    <description>Jenkins configuration</description>
+    <packaging>jar</packaging>
+    <inceptionYear>2022</inceptionYear>
+    <parent>
+        <groupId>ch.elca</groupId>
+        <artifactId>jenkins-configuration-parent</artifactId>
+        <version>11.47.0-1786</version> <!-- Use ELCA Jenkins version when upgrading -->
+        <relativePath />
+    </parent>
+    <repositories>
+        <repository>
+            <id>prj_sso_release</id>
+            <name>prj_sso_release</name>
+            <url>https://artifactory.svc.elca.ch/artifactory/prj_sso_release/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+</project>

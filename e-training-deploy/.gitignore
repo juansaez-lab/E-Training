@@ -1,0 +1,2 @@
+e-training-backend/build/docker-container/target/**
+e-training-frontend/build/docker-container/dist/**

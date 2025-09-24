@@ -1,0 +1,89 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: etime-${ENVIRONMENT}-${LOCATION}-frontend-deployment
+labels:
+  app.kubernetes.io/name: etime-${ENVIRONMENT}-${LOCATION}-frontend
+  app.kubernetes.io/instance: etime-${ENVIRONMENT}-${LOCATION}-frontend-main
+  app.kubernetes.io/component: ${ENVIRONMENT}-${LOCATION}-frontend
+  app.kubernetes.io/part-of: etime-${ENVIRONMENT}-${LOCATION}
+
+objects:
+  - apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      name: etime-${ENVIRONMENT}-${LOCATION}-frontend-deployment
+      labels:
+        app.openshift.io/runtime: angularjs
+    spec:
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            name: etime-${ENVIRONMENT}-${LOCATION}-frontend-pod
+        spec:
+          serviceAccountName: runas-anyuid
+          securityContext:
+            runAsUser: 0
+          containers:
+            - name: etime-${ENVIRONMENT}-${LOCATION}-frontend-container
+              image: prj-elca-timecontrol-docker.artifactory.svc.elca.ch/frontend:${IMAGE_TAG}
+              imagePullPolicy: Always
+              env:
+                - name: ENVIRONMENT
+                  value: ${ENVIRONMENT}
+                - name: LOCATION
+                  value: ${LOCATION}
+              envFrom:
+                - configMapRef:
+                    name: ${ENVIRONMENT}-${LOCATION}-frontend-config
+              resources:
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+                requests:
+                  cpu: ${CPU_REQUESTS}
+                  memory: ${MEMORY_REQUESTS}
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: etime-${ENVIRONMENT}-${LOCATION}-frontend-service
+    spec:
+      ports:
+        - name: etime-${ENVIRONMENT}-${LOCATION}-frontend-port
+          port: 80
+      selector:
+        name: etime-${ENVIRONMENT}-${LOCATION}-frontend-pod
+
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: etime-${ENVIRONMENT}-${LOCATION}-frontend-route
+    spec:
+      host: etime-${ENVIRONMENT}-${LOCATION}.apps.okd.svc.elca.ch
+      port:
+        targetPort: etime-${ENVIRONMENT}-${LOCATION}-frontend-port
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Allow
+      to:
+        kind: Service
+        name: etime-${ENVIRONMENT}-${LOCATION}-frontend-service
+        weight: 100
+
+parameters:
+  - description: Docker image tag to deploy
+    name: IMAGE_TAG
+  - description: Environment to deploy
+    name: ENVIRONMENT
+  - description: Location to deploy
+    name: LOCATION
+  - description: CPU usage limit
+    name: CPU_LIMIT
+  - description: Memory usage limit
+    name: MEMORY_LIMIT
+  - description: Minimum CPU usage
+    name: CPU_REQUESTS
+  - description: Minimum memory usage
+    name: MEMORY_REQUESTS
