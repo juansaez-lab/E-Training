@@ -1,0 +1,14 @@
+<div *ngIf="parts.length > 0">
+<ng-container *ngFor="let part of parts">
+  <ng-container *ngIf="part.type === 'text'">
+    {{ part.content }}
+  </ng-container>
+
+  <ng-container *ngIf="part.type === 'input'">
+    <input
+            type="text"
+            [value]="part.content"
+            (input)="onInputChange(part.index!, $event.target.value)" />
+  </ng-container>
+</ng-container>
+</div>

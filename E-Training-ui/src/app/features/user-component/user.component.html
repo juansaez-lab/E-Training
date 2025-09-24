@@ -1,0 +1,36 @@
+<div class="user-container">
+    <h2>Edición de Usuario</h2>
+    <div class="form-group">
+        <app-input [value]="name" [label]="'Name'" type="text" style="width: 25%;" (onchange)="name = $event"/>
+    </div>
+    <div class="form-group">
+        <app-input [value]="surname" [label]="'Surname'" type="text" (onchange)="surname = $event" /><br/>
+    </div>
+    <div class="form-group">
+        <app-input [value]="dni" type="text" [label]="'DNI'" style="width: 25%;" (onchange)="dni = $event" />
+    </div>
+    <div class="form-group" >
+        <app-input [value]="birthdate" type="date" [label]="'Birth Date'" style="width: 25%;" (onchange)="birthdate = $event"/><br/>
+    </div>
+    <div class="form-group">
+        <app-input [value]="username" type="text" [label]="'UserName'" style="width: 25%;" (onchange)="username = $event" />
+    </div>
+    <div class="form-group">
+        <app-input [value]="password" type="password" [label]="'Password'" style="width: 25%;" (onchange)="password = $event" />
+    </div>
+    <div class="form-group">
+        <app-input [value]="email" type="text" [label]="'Email'" style="width: 25%;"  (onchange)="email = $event"/>
+    </div>
+
+    <div class="form-group" style="width: 25%;">
+        <app-select [value]="role" [label]="'Role'" [items]="roles" placeholder="Role" (onchange)="role = $event">
+
+        </app-select>
+    </div>
+    <div class="form-group buttons">
+        <app-button (click)="onSave()" [text]="'Save'"/>
+        <app-button (click)="onBack()" [text]="'Back'"/>
+    </div>
+
+
+</div>

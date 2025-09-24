@@ -1,0 +1,30 @@
+<div class="question-container">
+    <section>
+        <select [value]="subjectInternal" (change)="subjectchange($event)" style="width: 90%;">
+        <option *ngFor="let subject of subjects" [value]="subject.id">{{subject.name}}</option>
+    </select>  
+    </section>
+    <section>
+        <input type="text" [(ngModel)]="nameInternal" placeholder="Name"/>
+    </section>
+    <section>
+        <input type="text" [(ngModel)]="descriptionInternal" placeholder="Description"/>
+    </section>    
+    <ng-container>
+        <h2>Preguntas:</h2>        
+        <ng-container style="height: max-700px;overflow-y: auto;">            
+        <ng-container>            
+            <app-question [order]="question.order" [type]="question.type" [description]="question.description" [responses]="question.responses" [answer]="question.answer"
+            (onback)="goprevious($event)"
+            (onnext)="gonext($event)"
+            (onsave)="saveQuestion($event)" 
+            (ondelete)="removeQuestion($event)" />
+        </ng-container>
+        </ng-container>        
+    </ng-container>
+    
+    <section class="buttons-container" id="buttons">        
+        <app-button [class]="'button'" [text]="'Clean'" (click)="oncleanpush(); $event.stopPropagation();"/>
+        <app-button [class]="'button'" [text]="'Save'"  (click)="onsavepush(); $event.stopPropagation();"/>
+    </section>
+</div>

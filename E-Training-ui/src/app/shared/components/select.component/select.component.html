@@ -1,0 +1,14 @@
+<div class="input-container">
+    <select
+            [(ngModel)]="valueInternal"
+            (focus)="focused = true"
+            (blur)="focused = false"
+            [class.filled]="valueInternal"
+            [class]="class"
+            [style]="style"
+            (change)="changevalue($event); $event.stopPropagation();"
+    >
+        <option *ngFor="let option of items" [value]="option.key">{{option.label}}</option>
+    </select>
+    <label [class.floating]="valueInternal || focused">{{ label }}</label>
+</div>

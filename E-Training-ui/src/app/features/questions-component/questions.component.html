@@ -1,0 +1,10 @@
+
+<app-home-navigation/>
+<app-table [data] = questionList
+           [headers] = "['type', 'description', 'active']"
+           [rowkey] = "'id'"
+           (rowDblClick) = "gotoEdit($event)"
+/>
+<section style="width: 20%;">
+    <app-button (click)="gotoNew()" [text]="'New Question'"/>
+</section>

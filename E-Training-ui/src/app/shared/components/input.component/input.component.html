@@ -1,0 +1,13 @@
+<div [class.input-container]="true" [class]="class">
+    <input
+            [type]="type"
+            [(ngModel)]="valueInternal"
+            (focus)="focused = true"
+            (blur)="focused = false"
+            [class.filled]="valueInternal"
+
+            [style]="style"
+            (input)="changevalue($event); $event.stopPropagation();"
+    />
+    <label [class.floating]="valueInternal || focused || type == 'date' ">{{ label }}</label>
+</div>
